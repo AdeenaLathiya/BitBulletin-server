@@ -52,7 +52,7 @@ class WebscrapingSpider(scrapy.Spider):
     time = response.css("span.story__time span.timestamp--time span.timestamp__time::text").extract(), 
     date = response.css("span.story__time span.timestamp--date::text").extract()  
     category = 'business'
-    source = ''
+    source = 'DAWN'
 
     items['title'] = title
     items['author'] = author
@@ -75,7 +75,7 @@ class WebscrapingSpider(scrapy.Spider):
     time = response.css("span.story__time span.timestamp--time span.timestamp__time::text").extract(), 
     date = response.css("span.story__time span.timestamp--date::text").extract() 
     category = 'sports'
-    source = ''
+    source = 'DAWN'
 
     items['title'] = title
     items['author'] = author
@@ -98,7 +98,7 @@ class WebscrapingSpider(scrapy.Spider):
     time = response.css("span.story__time span.timestamp--time span.timestamp__time::text").extract(), 
     date = response.css("span.story__time span.timestamp--date::text").extract() 
     category = 'tech'
-    source = ''
+    source = 'DAWN'
 
     items['title'] = title
     items['author'] = author
@@ -119,9 +119,9 @@ class WebscrapingSpider(scrapy.Spider):
     content = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.story-text p span::text').get().strip()
     image = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.top-big-img div.story-featuredimage div.amp-top-main-img div.featured-image-global img::attr(src)').get()
     date = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
-    time = ''
+    time = response.xpath('//script[@type="application/ld+json"]/text()').get()
     category = 'business'
-    source = ''
+    source = 'Express Tribune'
 
     items['title'] = title
     items['author'] = author
@@ -142,9 +142,9 @@ class WebscrapingSpider(scrapy.Spider):
     content = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.story-text p::text').get().strip()
     image = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.top-big-img div.story-featuredimage div.amp-top-main-img div.featured-image-global img::attr(src)').get()
     date = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
-    time = ''
+    time = response.xpath('//script[@type="application/ld+json"]/text()').get()
     category = 'sports'
-    source = ''
+    source = 'Express Tribune'
 
     items['title'] = title
     items['author'] = author
@@ -165,9 +165,9 @@ class WebscrapingSpider(scrapy.Spider):
     content = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.story-text p::text').get().strip()
     image = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.top-big-img div.story-featuredimage div.amp-top-main-img div.featured-image-global img::attr(src)').get()
     date = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
-    time = ''
+    time = response.xpath('//script[@type="application/ld+json"]/text()').get()
     category = 'sports'
-    source = ''
+    source = 'Express Tribune'
 
     items['title'] = title
     items['author'] = author
