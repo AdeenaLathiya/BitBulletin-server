@@ -8,40 +8,26 @@ class WebscrapingSpider(scrapy.Spider):
 
   def start_requests(self):
       #calling Dawn Categories
-      yield Request('https://www.dawn.com/business',callback=self.DawnBusiness)
-      yield Request('https://www.dawn.com/sport',callback=self.DawnSports)
-      yield Request('https://www.dawn.com/tech',callback=self.DawnTech)
+      yield Request('https://www.dawn.com/business',callback=self.Dawn, meta={'category': 'business','source': 'DAWN'})
+      yield Request('https://www.dawn.com/sport',callback=self.Dawn, meta={'category': 'sports','source': 'DAWN'})
+      yield Request('https://www.dawn.com/tech',callback=self.Dawn, meta={'category': 'tech','source': 'DAWN'})
 
-      # #calling Tribune Categories
-      yield Request('https://tribune.com.pk/Business',callback=self.TribuneBusiness)
-      yield Request('https://tribune.com.pk/Sports',callback=self.TribuneSports)
-      yield Request('https://tribune.com.pk/Technology',callback=self.TribuneTech)
+      # # #calling Tribune Categories
+      yield Request('https://tribune.com.pk/Business',callback=self.TribuneBusiness, meta={'category': 'business','source': 'Tribune' })
+      yield Request('https://tribune.com.pk/Sports',callback=self.Tribune, meta={'category': 'sports','source': 'Tribune' })
+      yield Request('https://tribune.com.pk/Technology',callback=self.Tribune, meta={'category': 'tech','source': 'Tribune' })
 
-  def DawnBusiness(self,response):
+  def Dawn(self,response):
     for newsLink in response.css("h2.story__title a::attr(href)"):
-      yield response.follow(newsLink.get(), callback=self.parseDawn, meta={'category': 'business','source': 'DAWN'})
-
-  def DawnSports(self,response):
-      for newsLink in response.css("h2.story__title a::attr(href)"):
-        yield response.follow(newsLink.get(), callback=self.parseDawn, meta={'category': 'sports','source': 'DAWN'})
-
-  def DawnTech(self,response):
-      for newsLink in response.css("h2.story__title a::attr(href)"):
-        yield response.follow(newsLink.get(), callback=self.parseDawn, meta={'category': 'tech','source': 'DAWN'})
+      yield response.follow(newsLink.get(), callback=self.parseDawn, meta={'category': response.meta['category'],'source': response.meta['source']})
 
   def TribuneBusiness(self,response):
       for all_news_link in response.css('ul.listing-page li div.row div.col-md-8 div.horiz-news3-caption a::attr(href)'):
-        yield response.follow(all_news_link.get(), callback=self.parseTribuneBusiness, meta={'category': 'business','source': 'Tribune' })
+        yield response.follow(all_news_link.get(), callback=self.parseTribuneBusiness, meta={'category': response.meta['category'],'source': response.meta['source']})
 
-  def TribuneSports(self,response):
+  def Tribune(self,response):
       for all_news_link in response.css('ul.listing-page li div.row div.col-md-8 div.horiz-news3-caption a::attr(href)'):
-        yield response.follow(all_news_link.get(), callback=self.parseTribune, meta={'category': 'sports','source': 'Tribune'})
-
-  def TribuneTech(self,response):
-      for all_news_link in response.css('ul.listing-page li div.row div.col-md-8 div.horiz-news3-caption a::attr(href)'):
-        yield response.follow(all_news_link.get(), callback=self.parseTribune, meta={'category': 'tech','source': 'Tribune'})            
-
-
+        yield response.follow(all_news_link.get(), callback=self.parseTribune, meta={'category': response.meta['category'],'source': response.meta['source']})            
 
   def parseDawn(self, response):
     items = WebscrapingItem()
