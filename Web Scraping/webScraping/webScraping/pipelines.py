@@ -13,7 +13,9 @@ from spacy.lang.en.stop_words import STOP_WORDS
 from string import punctuation
 from heapq import nlargest
 
-
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
 class WebscrapingPipeline(object):
     def process_item(self, item, spider):
@@ -34,8 +36,21 @@ class WebscrapingPipeline(object):
             "summary": summarizedContent
         }
 
-        print("News INFO PRINTINGGGGG")
-        print(newsInfo)
+        # print("News INFO PRINTINGGGGG")
+        # print(newsInfo)
+
+        cred = credentials.Certificate("credentials.json")
+        firebase_admin.initialize_app(cred)
+        db = firestore.client() 
+
+        def firebase_save(collection_id, document_id, data):
+            db.collection(collection_id).document(document_id).set(data)
+
+        firebase_save(
+            collection_id = "Category", 
+            document_id = "Sports", 
+            data = newsInfo
+        )    
         # json_object = json.dumps(newsInfo, indent = 4)
   
         # # # Writing to sample.json
@@ -43,8 +58,8 @@ class WebscrapingPipeline(object):
         #     outfile.write(json_object)
        
 
-    def print_content(self, con):
-        print("This is the function contenttt", con)
+    # def print_content(self, con):
+    #     print("This is the function contenttt", con)
 
     def text_summarizer(self, raw_docx):
         nlp = spacy.load('en_core_web_sm')
@@ -88,7 +103,8 @@ class WebscrapingPipeline(object):
         # print('\n\nSummarized Document\n')
         return summary
 
-        
+
+    
             # return item
     #newsArray se object banwakr save krwaskte hain
         
