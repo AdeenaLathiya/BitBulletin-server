@@ -17,13 +17,21 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
+import json
+import os
 class WebscrapingPipeline(object):
+    def __init__(self):
+        cred = credentials.Certificate('./credentials.json')
+        firebase_admin.initialize_app(cred, {
+            'databaseURL': 'https:/bitbulletin-73e03.firebaseio.com'
+        })
+
     def process_item(self, item, spider):
         newsArray = ItemAdapter(item).asdict()
         contentList = newsArray['content']
         contentString = ' '.join(map(str, contentList))
         summarizedContent = self.text_summarizer(contentString)
-        # print(summarizedContent)
+        print(summarizedContent)
         newsInfo = {
             "title": newsArray['title'],
             "author": newsArray['author'],
@@ -38,16 +46,13 @@ class WebscrapingPipeline(object):
 
         # print("News INFO PRINTINGGGGG")
         # print(newsInfo)
-
-        cred = credentials.Certificate("credentials.json")
-        firebase_admin.initialize_app(cred)
-        db = firestore.client() 
-
+        
+        db = firestore.client()
         def firebase_save(collection_id, document_id, data):
             db.collection(collection_id).document(document_id).set(data)
 
         firebase_save(
-            collection_id = "Category", 
+            collection_id = "New", 
             document_id = "Sports", 
             data = newsInfo
         )    

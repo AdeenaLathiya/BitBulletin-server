@@ -12,7 +12,7 @@ class WebscrapingSpider(scrapy.Spider):
       yield Request('https://www.dawn.com/sport',callback=self.Dawn, meta={'category': 'sports','source': 'DAWN'})
       yield Request('https://www.dawn.com/tech',callback=self.Dawn, meta={'category': 'tech','source': 'DAWN'})
 
-      # # #calling Tribune Categories
+      #calling Tribune Categories
       yield Request('https://tribune.com.pk/Business',callback=self.TribuneBusiness, meta={'category': 'business','source': 'Tribune' })
       yield Request('https://tribune.com.pk/Sports',callback=self.Tribune, meta={'category': 'sports','source': 'Tribune' })
       yield Request('https://tribune.com.pk/Technology',callback=self.Tribune, meta={'category': 'tech','source': 'Tribune' })
