@@ -9,13 +9,13 @@ class WebscrapingSpider(scrapy.Spider):
   def start_requests(self):
       #calling Dawn Categories
       yield Request('https://www.dawn.com/business',callback=self.Dawn, meta={'category': 'business','source': 'DAWN'})
-      yield Request('https://www.dawn.com/sport',callback=self.Dawn, meta={'category': 'sports','source': 'DAWN'})
-      yield Request('https://www.dawn.com/tech',callback=self.Dawn, meta={'category': 'tech','source': 'DAWN'})
+      # yield Request('https://www.dawn.com/sport',callback=self.Dawn, meta={'category': 'sports','source': 'DAWN'})
+      # yield Request('https://www.dawn.com/tech',callback=self.Dawn, meta={'category': 'tech','source': 'DAWN'})
 
-      #calling Tribune Categories
-      yield Request('https://tribune.com.pk/Business',callback=self.TribuneBusiness, meta={'category': 'business','source': 'Tribune' })
-      yield Request('https://tribune.com.pk/Sports',callback=self.Tribune, meta={'category': 'sports','source': 'Tribune' })
-      yield Request('https://tribune.com.pk/Technology',callback=self.Tribune, meta={'category': 'tech','source': 'Tribune' })
+      # #calling Tribune Categories
+      # yield Request('https://tribune.com.pk/Business',callback=self.TribuneBusiness, meta={'category': 'business','source': 'Tribune' })
+      # yield Request('https://tribune.com.pk/Sports',callback=self.Tribune, meta={'category': 'sports','source': 'Tribune' })
+      # yield Request('https://tribune.com.pk/Technology',callback=self.Tribune, meta={'category': 'tech','source': 'Tribune' })
 
   def Dawn(self,response):
     for newsLink in response.css("h2.story__title a::attr(href)"):

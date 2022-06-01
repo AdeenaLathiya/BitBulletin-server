@@ -31,16 +31,28 @@ class WebscrapingPipeline(object):
         contentList = newsArray['content']
         contentString = ' '.join(map(str, contentList))
         summarizedContent = self.text_summarizer(contentString)
-        print(summarizedContent)
+
+        print('newsArray: ', newsArray)
+        # print(summarizedContent)
         newsInfo = {
-            "title": newsArray['title'],
-            "author": newsArray['author'],
-            "content": contentString,
-            "image": newsArray['image'],
-            "time": newsArray['time'],
-            "date": newsArray['date'],
-            "category": newsArray['category'],
-            "source": newsArray['source'],
+            # "title": "newsArray['title']",
+            # "author": "newsArray['author']",
+            # "content": "contentString",
+            # "image": "newsArray['image']",
+            # "time": "newsArray['time']",
+            # "date": "newsArray['date']",
+            # "category": "newsArray['category']",
+            # "source": "newsArray['source']",
+            # "summary": "summarizedContent"
+
+            # "title" : newsArray['title'],
+            # "author": newsArray['author'],
+            # "content": contentString,
+            # "image": newsArray['image'],
+            # "time": newsArray['time'],
+            # "date": newsArray['date'],
+            # "category": newsArray['category'],
+            # "source": newsArray['source'],
             "summary": summarizedContent
         }
 
@@ -48,14 +60,21 @@ class WebscrapingPipeline(object):
         # print(newsInfo)
         
         db = firestore.client()
-        def firebase_save(collection_id, document_id, data):
-            db.collection(collection_id).document(document_id).set(data)
+        # batch = firesto
+        # appKey = db.collection(u'Old2').document(u'Tech1').id
+        def firebase_save():
+            tech_ref = db.collection(u'Old12').document(u'Tech2').collection(u'News')
+            tech_ref.add(newsInfo)
 
-        firebase_save(
-            collection_id = "New", 
-            document_id = "Sports", 
-            data = newsInfo
-        )    
+        firebase_save()    
+        # def firebase_save(collection_id, document_id, data):
+        #     db.collection(collection_id).document(document_id).set(data)
+
+        # firebase_save(
+        #     collection_id = "New", 
+        #     document_id = "Sports", 
+        #     data = newsInfo
+        # )    
         # json_object = json.dumps(newsInfo, indent = 4)
   
         # # # Writing to sample.json
