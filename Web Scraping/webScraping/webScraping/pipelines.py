@@ -19,14 +19,27 @@ class WebscrapingPipeline(object):
     def process_item(self, item, spider):
         newsArray = ItemAdapter(item).asdict()
         contentList = newsArray['content']
-        contentString = ' '.join(map(str, contentList))
+        # contentString = ' '.join(map(str, contentList))
+        contentString = ''.join(contentList)
+        # contentStringJoin = ''.join(contentString)
         summarizedContent = self.text_summarizer(contentString)
+        # newsTitleString = "'" + newsArray['title'] + "'"
+        # newsTitle = newsArray['title'].replace('(', '')
+        # newsTitle = newsTitleString.replace('(', '')
+        newsTitle = newsArray['title']
+        newsTitleString = ''.join(newsTitle)
+        newsAuthor = newsArray['author']
+        newsAuthorString = ''.join(newsAuthor)
+        newsImage = newsArray['image']
+        newsImageString = ''.join(newsImage)
+
+
         # print(summarizedContent)
         newsInfo = {
-            "title": newsArray['title'],
-            "author": newsArray['author'],
+            "title": newsTitleString,
+            "author": newsAuthorString,
             "content": contentString,
-            "image": newsArray['image'],
+            "image": newsImageString,
             "time": newsArray['time'],
             "date": newsArray['date'],
             "category": newsArray['category'],
@@ -34,8 +47,19 @@ class WebscrapingPipeline(object):
             "summary": summarizedContent
         }
 
-        print("News INFO PRINTINGGGGG")
+        print("News INFO PRINTINGGGGG now new")
         print(newsInfo)
+        # newsTitleString = ''.join(newsTitle)
+        # print("news title strings")
+        # print(newsTitleString)
+        # authorString = ''.join(newsAuthor)
+        # print("News author")
+        # print(authorString)
+        # print(contentString)
+        # print(contentStringJoin)
+        # print(contentString)
+
+        # print(newsTitle)
         # json_object = json.dumps(newsInfo, indent = 4)
   
         # # # Writing to sample.json
@@ -43,8 +67,8 @@ class WebscrapingPipeline(object):
         #     outfile.write(json_object)
        
 
-    def print_content(self, con):
-        print("This is the function contenttt", con)
+    # def print_content(self, con):
+    #     print("This is the function contenttt", con)
 
     def text_summarizer(self, raw_docx):
         nlp = spacy.load('en_core_web_sm')
