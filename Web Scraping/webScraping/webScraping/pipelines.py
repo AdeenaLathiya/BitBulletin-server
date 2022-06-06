@@ -7,6 +7,7 @@
 import json
 from itemadapter import ItemAdapter
 import re
+from numpy import nested_iters
 
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
@@ -28,42 +29,51 @@ class WebscrapingPipeline(object):
 
     def process_item(self, item, spider):
         newsArray = ItemAdapter(item).asdict()
-        contentList = newsArray['content']
-        contentString = ' '.join(map(str, contentList))
-        summarizedContent = self.text_summarizer(contentString)
+        # contentList = newsArray['content']
+        # contentString = ' '.join(map(str, contentList))
+        # contentString = ''.join(contentList)
+        # contentStringJoin = ''.join(contentString)
+        # summarizedContent = self.text_summarizer(contentString)
+        # newsTitleString = "'" + newsArray['title'] + "'"
+        # newsTitle = newsArray['title'].replace('(', '')
+        # newsTitle = newsTitleString.replace('(', '')
+        newsTitle = newsArray['title']
+        newsTitleString = ''.join(newsTitle)
+        newsAuthor = newsArray['author']
+        newsAuthorString = ''.join(newsAuthor)
+        newsImage = newsArray['image']
+        newsImageString = ''.join(newsImage)
+        newsDate = newsArray['date']
+        newsDateString = ''.join(newsDate)
+        # newsTime = newsArray['time']
+        # newsTimeList = ''.join(newsTime)
+        # newsTimeString = ''.join(newsTimeList)
 
-        print('newsArray: ', newsArray)
+
         # print(summarizedContent)
         newsInfo = {
-            # "title": "newsArray['title']",
-            # "author": "newsArray['author']",
-            # "content": "contentString",
-            # "image": "newsArray['image']",
-            # "time": "newsArray['time']",
-            # "date": "newsArray['date']",
-            # "category": "newsArray['category']",
-            # "source": "newsArray['source']",
-            # "summary": "summarizedContent"
-
-            # "title" : newsArray['title'],
-            # "author": newsArray['author'],
+            "title": newsTitleString,
+            "author": newsAuthorString,
             # "content": contentString,
-            # "image": newsArray['image'],
+            "image": newsImageString,
             # "time": newsArray['time'],
-            # "date": newsArray['date'],
-            # "category": newsArray['category'],
-            # "source": newsArray['source'],
-            "summary": summarizedContent
+            "date": newsDateString,
+            "category": newsArray['category'],
+            "source": newsArray['source'],
+            # "summary": summarizedContent
         }
 
-        # print("News INFO PRINTINGGGGG")
-        # print(newsInfo)
-        
+        print("News INFO PRINTINGGGGG now new")
+        print(newsInfo)
+        # print(newsDateString)
+        # print('time111', newsArray['time'])
+        # print('news time string', newsTimeString)
+        # print(newsTimeString)
         db = firestore.client()
         # batch = firesto
         # appKey = db.collection(u'Old2').document(u'Tech1').id
         def firebase_save():
-            tech_ref = db.collection(u'Old12').document(u'Tech2').collection(u'News')
+            tech_ref = db.collection(u'Old12').document(u'TechNew').collection(u'News')
             tech_ref.add(newsInfo)
 
         firebase_save()    
