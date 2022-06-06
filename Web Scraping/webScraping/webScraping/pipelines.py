@@ -4,9 +4,9 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-import json
+# import json
 from itemadapter import ItemAdapter
-import re
+# import re
 
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
@@ -18,7 +18,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 import json
-import os
+# import os
 class WebscrapingPipeline(object):
     def __init__(self):
         cred = credentials.Certificate('./credentials.json')
@@ -28,62 +28,42 @@ class WebscrapingPipeline(object):
 
     def process_item(self, item, spider):
         newsArray = ItemAdapter(item).asdict()
+
+        newsTitle = newsArray['title']
+        newsTitleString = ''.join(newsTitle)
+
+        newsAuthor = newsArray['author']
+        newsAuthorString = ''.join(newsAuthor)
+
         contentList = newsArray['content']
-        contentString = ' '.join(map(str, contentList))
+        contentString = ''.join(contentList)
+
+        newsImage = newsArray['image']
+        newsImageString = ''.join(newsImage)
+       
         summarizedContent = self.text_summarizer(contentString)
 
-        print('newsArray: ', newsArray)
-        # print(summarizedContent)
         newsInfo = {
-            # "title": "newsArray['title']",
-            # "author": "newsArray['author']",
-            # "content": "contentString",
-            # "image": "newsArray['image']",
-            # "time": "newsArray['time']",
-            # "date": "newsArray['date']",
-            # "category": "newsArray['category']",
-            # "source": "newsArray['source']",
-            # "summary": "summarizedContent"
-
-            # "title" : newsArray['title'],
-            # "author": newsArray['author'],
-            # "content": contentString,
-            # "image": newsArray['image'],
-            # "time": newsArray['time'],
-            # "date": newsArray['date'],
-            # "category": newsArray['category'],
-            # "source": newsArray['source'],
+            "title": newsTitleString,
+            "author": newsAuthorString,
+            "content": contentString,
+            "image": newsImageString,
+            "time": newsArray['time'],
+            "date": newsArray['date'],
+            "category": newsArray['category'],
+            "source": newsArray['source'],
             "summary": summarizedContent
         }
-
-        # print("News INFO PRINTINGGGGG")
-        # print(newsInfo)
         
         db = firestore.client()
-        # batch = firesto
-        # appKey = db.collection(u'Old2').document(u'Tech1').id
         def firebase_save():
-            tech_ref = db.collection(u'Old12').document(u'Tech2').collection(u'News')
+            tech_ref = db.collection(u'Old12').document(u'Business').collection(u'News')
             tech_ref.add(newsInfo)
 
         firebase_save()    
-        # def firebase_save(collection_id, document_id, data):
-        #     db.collection(collection_id).document(document_id).set(data)
-
-        # firebase_save(
-        #     collection_id = "New", 
-        #     document_id = "Sports", 
-        #     data = newsInfo
-        # )    
-        # json_object = json.dumps(newsInfo, indent = 4)
-  
-        # # # Writing to sample.json
-        # with open("freshNews.json", "w") as outfile:
-        #     outfile.write(json_object)
        
-
-    # def print_content(self, con):
-    #     print("This is the function contenttt", con)
+        print("News INFO PRINTINGGGGG now new")
+        print(newsInfo)
 
     def text_summarizer(self, raw_docx):
         nlp = spacy.load('en_core_web_sm')
