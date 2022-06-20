@@ -4,14 +4,13 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-# import json
-from unicodedata import category
-from itemadapter import ItemAdapter
 
-# import re
-import re
-from numpy import nested_iters
-import pandas as pd
+# # import json
+# from operator import index
+# from unicodedata import category
+# from itemadapter import ItemAdapter
+
+# from numpy import nested_iters
 
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
@@ -22,9 +21,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-import json
 
-# import os
 class WebscrapingPipeline(object):
     def __init__(self):
         cred = credentials.Certificate("./credentials.json")
@@ -33,69 +30,39 @@ class WebscrapingPipeline(object):
         )
 
     def process_item(self, item, spider):
-        newsArray = ItemAdapter(item).asdict()
-        # contentList = newsArray['content']
-        # contentString = ' '.join(map(str, contentList))
-        # contentString = ''.join(contentList)
-        # contentStringJoin = ''.join(contentString)
-        # summarizedContent = self.text_summarizer(contentString)
-        newsTitle = newsArray["title"]
-        newsTitleString = "".join(newsTitle)
-        newsAuthor = newsArray["author"]
-        newsAuthorString = "".join(newsAuthor)
-        newsImage = newsArray["image"]
-        newsImageString = "".join(newsImage)
-        newsDate = newsArray["date"]
-        newsDateString = "".join(newsDate)
-        # newsTime = newsArray['time']
-        # newsTimeList = ''.join(newsTime)
-        # newsTimeString = ''.join(newsTimeList)
+        if item["category"] == "business":
+            self.businessNews_save(item)
+        if item["category"] == "sports":
+            self.sportsNews_save(item)
+        if item["category"] == "tech":
+            self.techNews_save(item)
 
-        # print(summarizedContent)
-
-        newsInfo = {
-            "title": newsTitleString,
-            "author": newsAuthorString,
-            # "content": contentString,
-            "image": newsImageString,
-            # "time": newsArray['time'],
-            "date": newsDateString,
-            "category": newsArray["category"],
-            "source": newsArray["source"],
-            # "summary": summarizedContent
-        }
-
-        print("News INFO PRINTINGGGGG now new")
-        print(newsInfo)
-        print("Data type: ", type(newsInfo))
-
-        totalNews = []
-        for news in newsInfo.items():
-            totalNews.append(news)
-        allNews = pd.DataFrame(totalNews)
-
-        print("Dataaaaaaaa")
-        print(allNews)
-        print("Dataaaa type: ", type(allNews))
-
-        # categoryList = ["business", "sports", "tech"]
-        # businessNews = {}
-
-        # businessNews = dict(
-        #     filter(lambda business: business[1] == categoryList[0], newsInfo.items())
-        # )
-        # businessNews = {
-        #     key: value for (key, value) in newsInfo.items() if value == categoryList[0]
-        # }
-        # print("businessNews", list(businessNews.values()))
-
+    def businessNews_save(self, techNews):
         db = firestore.client()
+        tech_ref = (
+            db.collection(u"Category")
+            .document(u"uLzkXth3HoYSWg9qF8VR")
+            .collection(u"Business")
+        )
+        tech_ref.add(techNews)
 
-        def firebase_save():
-            tech_ref = db.collection(u"Old12").document(u"TechNew").collection(u"News")
-            tech_ref.add(newsInfo)
+    def sportsNews_save(self, sportsNews):
+        db = firestore.client()
+        tech_ref = (
+            db.collection(u"Category")
+            .document(u"rkIa2DnznfwceY6lFuKm")
+            .collection(u"Sports")
+        )
+        tech_ref.add(sportsNews)
 
-        # firebase_save()
+    def techNews_save(self, techNews):
+        db = firestore.client()
+        tech_ref = (
+            db.collection(u"Category")
+            .document(u"uQA8YiR8XdyVnjUMpjXd")
+            .collection(u"Tech")
+        )
+        tech_ref.add(techNews)
 
     def text_summarizer(self, raw_docx):
         nlp = spacy.load("en_core_web_sm")
@@ -137,7 +104,3 @@ class WebscrapingPipeline(object):
         summary = " ".join(final_sentences)
         # print('\n\nSummarized Document\n')
         return summary
-
-        # return item
-
-    # newsArray se object banwakr save krwaskte hain
