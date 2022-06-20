@@ -5,23 +5,14 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
-# # import json
-# from operator import index
-# from unicodedata import category
-# from itemadapter import ItemAdapter
-
-# from numpy import nested_iters
 
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
-from string import punctuation
 from heapq import nlargest
 
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-
-
 class WebscrapingPipeline(object):
     def __init__(self):
         cred = credentials.Certificate("./credentials.json")
@@ -30,11 +21,15 @@ class WebscrapingPipeline(object):
         )
 
     def process_item(self, item, spider):
+
         if item["category"] == "business":
+            # print("true")
             self.businessNews_save(item)
         if item["category"] == "sports":
+            # print("true2")
             self.sportsNews_save(item)
         if item["category"] == "tech":
+            # print("true")
             self.techNews_save(item)
 
     def businessNews_save(self, techNews):
@@ -76,7 +71,7 @@ class WebscrapingPipeline(object):
         for word in docx:
             if word.text not in stopwords:
                 if word.text not in word_frequencies.keys():
-                    word_frequencies[word.text] = 1
+                 word_frequencies[word.text] = 1
                 else:
                     word_frequencies[word.text] += 1
 

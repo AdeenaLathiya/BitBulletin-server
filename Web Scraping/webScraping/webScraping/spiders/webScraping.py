@@ -1,8 +1,6 @@
 import scrapy
 import json
 from scrapy import Request
-import pandas as pd
-from itemadapter import ItemAdapter
 from ..items import WebscrapingItem
 
 class WebscrapingSpider(scrapy.Spider):
@@ -51,7 +49,7 @@ class WebscrapingSpider(scrapy.Spider):
       "time": self.filterTuple(items['time']),
       "date": self.filterAttr(items['date']),
       "category": category,
-      "source": source
+      "source": source,
     }
 
     yield items
@@ -77,7 +75,7 @@ class WebscrapingSpider(scrapy.Spider):
     "time":json_data['datePublished'],
     "date": self.filterAttr(items['date']),
     "category": category,
-    "source": source
+    "source": source,
   }
     
     yield items
@@ -87,7 +85,7 @@ class WebscrapingSpider(scrapy.Spider):
 
     items['title'] = response.css('div.story-box-section h1::text').get()
     items["author"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span a::text').get()
-    items['content'] = response.css('.story-text p::text').extract()
+    content = response.css('.story-text p::text').extract()
     items["image"] = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.top-big-img div.story-featuredimage div.amp-top-main-img div.featured-image-global img::attr(src)').get()
     items["date"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
     time = response.xpath('//script[@type="application/ld+json"]/text()').get()
@@ -100,10 +98,10 @@ class WebscrapingSpider(scrapy.Spider):
       "author": self.filterAttr(items['author']),
       "content": self.filterAttr(items['content']),
       "image": self.filterAttr(items['image']),
-      "time":json_data['datePublished'],
+      "time": json_data['datePublished'],
       "date": self.filterAttr(items['date']),
       "category": category,
-      "source": source
+      "source": source,
     }
 
     yield items  
@@ -114,4 +112,3 @@ class WebscrapingSpider(scrapy.Spider):
   def filterTuple(self, attr):
     listAttr = list(attr)
     return " ".join([' '.join([str(c) for c in lst]) for lst in listAttr])
-    

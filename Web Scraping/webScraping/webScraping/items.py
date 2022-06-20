@@ -21,5 +21,6 @@ class WebscrapingItem(scrapy.Item):
     date = scrapy.Field()
     category = scrapy.Field()
     source = scrapy.Field()
+    summary = scrapy.Field()
 
     pass
