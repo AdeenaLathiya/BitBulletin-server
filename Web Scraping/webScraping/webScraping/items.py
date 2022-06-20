@@ -5,13 +5,14 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/items.html
 
+from turtle import title
 import scrapy
-
+from itemadapter import ItemAdapter
 
 class WebscrapingItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-
+    
     title = scrapy.Field()
     author = scrapy.Field()
     content = scrapy.Field()
@@ -20,5 +21,6 @@ class WebscrapingItem(scrapy.Item):
     date = scrapy.Field()
     category = scrapy.Field()
     source = scrapy.Field()
+    summary = scrapy.Field()
 
     pass
