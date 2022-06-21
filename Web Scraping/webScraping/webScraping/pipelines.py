@@ -10,9 +10,12 @@ import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 from heapq import nlargest
 
+from itemadapter import ItemAdapter
+
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+
 class WebscrapingPipeline(object):
     def __init__(self):
         cred = credentials.Certificate("./credentials.json")
@@ -21,16 +24,30 @@ class WebscrapingPipeline(object):
         )
 
     def process_item(self, item, spider):
+        news = ItemAdapter(item).asdict()
+        summary = self.text_summarizer(news['content'])
 
-        if item["category"] == "business":
-            # print("true")
-            self.businessNews_save(item)
-        if item["category"] == "sports":
+        news = {
+            "title": news['title'],
+            "author": news['author'],
+            "content": news['content'],
+            "image": news['image'],
+            "time": news['time'],
+            "date": news['date'],
+            "category": news['category'],
+            "source": news['source'],
+            "summary": summary
+        }
+
+        if news["category"] == "business":
+            # print("true1")
+            self.businessNews_save(news)
+        if news["category"] == "sports":
             # print("true2")
-            self.sportsNews_save(item)
-        if item["category"] == "tech":
-            # print("true")
-            self.techNews_save(item)
+            self.sportsNews_save(news)
+        if news["category"] == "tech":
+            # print("true3")
+            self.techNews_save(news)
 
     def businessNews_save(self, techNews):
         db = firestore.client()
@@ -45,7 +62,7 @@ class WebscrapingPipeline(object):
         db = firestore.client()
         tech_ref = (
             db.collection(u"Category")
-            .document(u"rkIa2DnznfwceY6lFuKm")
+            .document(u"uLzkXth3HoYSWg9qF8VR")
             .collection(u"Sports")
         )
         tech_ref.add(sportsNews)
@@ -54,7 +71,7 @@ class WebscrapingPipeline(object):
         db = firestore.client()
         tech_ref = (
             db.collection(u"Category")
-            .document(u"uQA8YiR8XdyVnjUMpjXd")
+            .document(u"uLzkXth3HoYSWg9qF8VR")
             .collection(u"Tech")
         )
         tech_ref.add(techNews)

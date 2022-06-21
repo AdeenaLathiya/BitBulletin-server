@@ -85,7 +85,7 @@ class WebscrapingSpider(scrapy.Spider):
 
     items['title'] = response.css('div.story-box-section h1::text').get()
     items["author"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span a::text').get()
-    content = response.css('.story-text p::text').extract()
+    items['content'] = response.css('.story-text p::text').extract()
     items["image"] = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.top-big-img div.story-featuredimage div.amp-top-main-img div.featured-image-global img::attr(src)').get()
     items["date"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
     time = response.xpath('//script[@type="application/ld+json"]/text()').get()
