@@ -10,9 +10,12 @@ import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 from heapq import nlargest
 
+from itemadapter import ItemAdapter
+
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+
 class WebscrapingPipeline(object):
     def __init__(self):
         cred = credentials.Certificate("./credentials.json")
@@ -21,15 +24,14 @@ class WebscrapingPipeline(object):
         )
 
     def process_item(self, item, spider):
-
         if item["category"] == "business":
-            # print("true")
+            print("true1")
             self.businessNews_save(item)
         if item["category"] == "sports":
-            # print("true2")
+            print("true2")
             self.sportsNews_save(item)
         if item["category"] == "tech":
-            # print("true")
+            print("true3")
             self.techNews_save(item)
 
     def businessNews_save(self, techNews):
@@ -45,7 +47,7 @@ class WebscrapingPipeline(object):
         db = firestore.client()
         tech_ref = (
             db.collection(u"Category")
-            .document(u"rkIa2DnznfwceY6lFuKm")
+            .document(u"uLzkXth3HoYSWg9qF8VR")
             .collection(u"Sports")
         )
         tech_ref.add(sportsNews)
@@ -54,7 +56,7 @@ class WebscrapingPipeline(object):
         db = firestore.client()
         tech_ref = (
             db.collection(u"Category")
-            .document(u"uQA8YiR8XdyVnjUMpjXd")
+            .document(u"uLzkXth3HoYSWg9qF8VR")
             .collection(u"Tech")
         )
         tech_ref.add(techNews)
