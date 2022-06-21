@@ -24,15 +24,30 @@ class WebscrapingPipeline(object):
         )
 
     def process_item(self, item, spider):
-        if item["category"] == "business":
-            print("true1")
-            self.businessNews_save(item)
-        if item["category"] == "sports":
-            print("true2")
-            self.sportsNews_save(item)
-        if item["category"] == "tech":
-            print("true3")
-            self.techNews_save(item)
+        news = ItemAdapter(item).asdict()
+        summary = self.text_summarizer(news['content'])
+
+        news = {
+            "title": news['title'],
+            "author": news['author'],
+            "content": news['content'],
+            "image": news['image'],
+            "time": news['time'],
+            "date": news['date'],
+            "category": news['category'],
+            "source": news['source'],
+            "summary": summary
+        }
+
+        if news["category"] == "business":
+            # print("true1")
+            self.businessNews_save(news)
+        if news["category"] == "sports":
+            # print("true2")
+            self.sportsNews_save(news)
+        if news["category"] == "tech":
+            # print("true3")
+            self.techNews_save(news)
 
     def businessNews_save(self, techNews):
         db = firestore.client()

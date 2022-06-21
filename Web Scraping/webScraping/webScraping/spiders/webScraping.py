@@ -50,7 +50,6 @@ class WebscrapingSpider(scrapy.Spider):
       "date": self.filterAttr(items['date']),
       "category": category,
       "source": source,
-      "summary": self.filterTuple(self.summary(items['content'])), 
     }
 
     yield items
@@ -77,7 +76,6 @@ class WebscrapingSpider(scrapy.Spider):
     "date": self.filterAttr(items['date']),
     "category": category,
     "source": source,
-    "summary": self.filterTuple(self.summary(items['content'])), 
   }
     
     yield items
@@ -104,7 +102,6 @@ class WebscrapingSpider(scrapy.Spider):
       "date": self.filterAttr(items['date']),
       "category": category,
       "source": source,
-      "summary": self.filterTuple(self.summary(items['content'])), 
     }
 
     yield items  
@@ -115,6 +112,3 @@ class WebscrapingSpider(scrapy.Spider):
   def filterTuple(self, attr):
     listAttr = list(attr)
     return " ".join([' '.join([str(c) for c in lst]) for lst in listAttr])
-
-  def summary(self, attr):
-    return attr
