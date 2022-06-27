@@ -2,6 +2,7 @@ import scrapy
 import json
 from scrapy import Request
 from ..items import WebscrapingItem
+import re
 
 class WebscrapingSpider(scrapy.Spider):
   name = 'webScraping'
@@ -37,9 +38,21 @@ class WebscrapingSpider(scrapy.Spider):
     items['content'] = response.css("p::text").extract(),
     items["image"] = response.css("figure.media--uneven div.media__item  picture img::attr(src)")[0].extract(),
     items['time'] = response.css("span.story__time span.timestamp--time span.timestamp__time::text").extract(), 
+    # time = response.xpath('//script[@type="text/javascript"]/text()').get()
+    # .re(r"gtag\('event', 'custom', ({.*})\);")
+    # 
+    # timePattern = re.compile(r"gtag\('event', 'custom', ({.*})\);")
+    # timed = timePattern.findall(time)
+    # print('dawn time::', timed)
+    # .re(r"gtag\('event', 'custom', ({.*})\);")
+    # json_data = json.loads(time, strict=False)
+
     items["date"] = response.css("span.story__time span.timestamp--date::text").extract()  
     category = response.meta['category']
     source = response.meta['source']
+
+    # print('dawn time::', json_data[0]['PublishedDate'])
+    # print('dawn time::', items['time'])
 
     items = {
       'title' : self.filterAttr(items['title']), 
@@ -77,6 +90,7 @@ class WebscrapingSpider(scrapy.Spider):
     "category": category,
     "source": source,
   }
+    print('tribune time::', items['time'])
     
     yield items
 

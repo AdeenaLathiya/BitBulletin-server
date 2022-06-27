@@ -11,6 +11,7 @@ from spacy.lang.en.stop_words import STOP_WORDS
 from heapq import nlargest
 
 from itemadapter import ItemAdapter
+from datetime import datetime
 
 import firebase_admin
 from firebase_admin import credentials
@@ -29,7 +30,7 @@ class WebscrapingPipeline(object):
         content = news['content']
 
         extraString = 'Compunode.com Pvt. Ltd. ( ).Designed for  . Copyright © 2022, Dawn Scribe Publishing Platform' 
-        extraString2 = "Updated"
+        extraString2 = ".Updated"
 
         if extraString in content:
             content = content.replace(extraString, '')
@@ -38,6 +39,15 @@ class WebscrapingPipeline(object):
             content = content[0]
 
         summary = self.text_summarizer(content)
+
+        time = news['time']
+        # print('time::', time)
+        # start = '2020-02-27 00:01:10'
+        # end = datetime.now()
+        # # time = str(end-start)
+        # # time = time.time()-time
+        # print("time::", type(time))
+        # print("time::", type(end))
 
         news = {
             "title": news['title'],
@@ -52,14 +62,14 @@ class WebscrapingPipeline(object):
         }
 
         if news["category"] == "business":
-            # print("true1")
-            self.businessNews_save(news)
+            print("true1")
+            # self.businessNews_save(news)
         if news["category"] == "sports":
-            # print("true2")
-            self.sportsNews_save(news)
+            print("true2")
+            # self.sportsNews_save(news)
         if news["category"] == "tech":
-            # print("true3")
-            self.techNews_save(news)
+            print("true3")
+            # self.techNews_save(news)
 
     def businessNews_save(self, techNews):
         db = firestore.client()
