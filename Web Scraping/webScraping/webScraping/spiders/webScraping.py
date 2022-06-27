@@ -1,8 +1,6 @@
 import scrapy
-import json
 from scrapy import Request
 from ..items import WebscrapingItem
-import re
 
 class WebscrapingSpider(scrapy.Spider):
   name = 'webScraping'
@@ -20,15 +18,15 @@ class WebscrapingSpider(scrapy.Spider):
 
   def Dawn(self,response):
     for newsLink in response.css("h2.story__title a::attr(href)"):
-      yield response.follow(newsLink.get(), callback=self.parseDawn, meta={'category': response.meta['category'],'source': response.meta['source']})
+      yield response.follow(newsLink.get(), callback=self.parseDawn, meta={'category': response.meta['category'],'source': response.meta['source'], 'link': newsLink.get()})
 
   def TribuneBusiness(self,response):
       for all_news_link in response.css('ul.listing-page li div.row div.col-md-8 div.horiz-news3-caption a::attr(href)'):
-        yield response.follow(all_news_link.get(), callback=self.parseTribuneBusiness, meta={'category': response.meta['category'],'source': response.meta['source']})
+        yield response.follow(all_news_link.get(), callback=self.parseTribuneBusiness, meta={'category': response.meta['category'],'source': response.meta['source'], 'link': all_news_link.get()})
 
   def Tribune(self,response):
       for all_news_link in response.css('ul.listing-page li div.row div.col-md-8 div.horiz-news3-caption a::attr(href)'):
-        yield response.follow(all_news_link.get(), callback=self.parseTribune, meta={'category': response.meta['category'],'source': response.meta['source']})            
+        yield response.follow(all_news_link.get(), callback=self.parseTribune, meta={'category': response.meta['category'],'source': response.meta['source'], 'link': all_news_link.get()})            
 
   def parseDawn(self, response):
     items = WebscrapingItem()
@@ -37,32 +35,22 @@ class WebscrapingSpider(scrapy.Spider):
     items["author"] = response.css("span.story__byline a.story__byline__link::text").extract_first() ,
     items['content'] = response.css("p::text").extract(),
     items["image"] = response.css("figure.media--uneven div.media__item  picture img::attr(src)")[0].extract(),
-    items['time'] = response.css("span.story__time span.timestamp--time span.timestamp__time::text").extract(), 
-    # time = response.xpath('//script[@type="text/javascript"]/text()').get()
-    # .re(r"gtag\('event', 'custom', ({.*})\);")
-    # 
-    # timePattern = re.compile(r"gtag\('event', 'custom', ({.*})\);")
-    # timed = timePattern.findall(time)
-    # print('dawn time::', timed)
-    # .re(r"gtag\('event', 'custom', ({.*})\);")
-    # json_data = json.loads(time, strict=False)
-
-    items["date"] = response.css("span.story__time span.timestamp--date::text").extract()  
+    time = response.xpath('//meta[@property="article:published_time"]/@content')[0].extract()
+    # items["date"] = response.css("span.story__time span.timestamp--date::text").extract()  
     category = response.meta['category']
     source = response.meta['source']
-
-    # print('dawn time::', json_data[0]['PublishedDate'])
-    # print('dawn time::', items['time'])
+    link = response.meta['link']
 
     items = {
       'title' : self.filterAttr(items['title']), 
       "author": self.filterAttr(items['author']),
       "content": self.filterTuple(items['content']),
       "image": self.filterAttr(items['image']),
-      "time": self.filterTuple(items['time']),
-      "date": self.filterAttr(items['date']),
+      "time": time,
+      # "date": self.filterAttr(items['date']),
       "category": category,
       "source": source,
+      "link": link,
     }
 
     yield items
@@ -74,23 +62,23 @@ class WebscrapingSpider(scrapy.Spider):
     items["author"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span a::text').get()
     items['content'] = response.css('p > span:nth-child(1)::text , p:nth-child(3)::text , .location-names::text').extract()
     items["image"] = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.top-big-img div.story-featuredimage div.amp-top-main-img div.featured-image-global img::attr(src)').get()
-    items["date"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
-    time = response.xpath('//script[@type="application/ld+json"]/text()').get()
-    json_data = json.loads(time, strict=False)
+    # items["date"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
+    time = response.xpath('//meta[@property="article:published_time"]/@content')[0].extract()
     category = response.meta['category']
     source = response.meta['source']
+    link = response.meta['link']
 
     items = {
     'title' : self.filterAttr(items['title']), 
     "author": self.filterAttr(items['author']),
     "content": self.filterAttr(items['content']),
     "image": self.filterAttr(items['image']),
-    "time":json_data['datePublished'],
-    "date": self.filterAttr(items['date']),
+    "time": time,
+    # "date": self.filterAttr(items['date']),
     "category": category,
     "source": source,
+    "link": link,
   }
-    print('tribune time::', items['time'])
     
     yield items
 
@@ -101,21 +89,22 @@ class WebscrapingSpider(scrapy.Spider):
     items["author"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span a::text').get()
     items['content'] = response.css('.story-text p::text').extract()
     items["image"] = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.top-big-img div.story-featuredimage div.amp-top-main-img div.featured-image-global img::attr(src)').get()
-    items["date"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
-    time = response.xpath('//script[@type="application/ld+json"]/text()').get()
-    json_data = json.loads(time, strict=False)
+    # items["date"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
+    time = response.xpath('//meta[@property="article:published_time"]/@content')[0].extract()
     category = response.meta['category']
     source = response.meta['source']
+    link = response.meta['link']
 
     items = {
       'title' : self.filterAttr(items['title']), 
       "author": self.filterAttr(items['author']),
       "content": self.filterAttr(items['content']),
       "image": self.filterAttr(items['image']),
-      "time": json_data['datePublished'],
-      "date": self.filterAttr(items['date']),
+      "time": time,
+      # "date": self.filterAttr(items['date']),
       "category": category,
       "source": source,
+      "link": link,
     }
 
     yield items  

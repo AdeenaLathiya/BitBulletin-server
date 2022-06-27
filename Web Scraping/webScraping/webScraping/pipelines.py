@@ -21,7 +21,7 @@ class WebscrapingPipeline(object):
     def __init__(self):
         cred = credentials.Certificate("./credentials.json")
         firebase_admin.initialize_app(
-            cred, {"databaseURL": "https:/bitbulletin-73e03.firebaseio.com"}
+            cred, {"databaseURL": "https:/bitbulletin-6052e.firebaseio.com"}
         )
 
     def process_item(self, item, spider):
@@ -40,36 +40,28 @@ class WebscrapingPipeline(object):
 
         summary = self.text_summarizer(content)
 
-        time = news['time']
-        # print('time::', time)
-        # start = '2020-02-27 00:01:10'
-        # end = datetime.now()
-        # # time = str(end-start)
-        # # time = time.time()-time
-        # print("time::", type(time))
-        # print("time::", type(end))
-
         news = {
             "title": news['title'],
             "author": news['author'],
             "content": content,
             "image": news['image'],
             "time": news['time'],
-            "date": news['date'],
+            # "date": news['date'],
             "category": news['category'],
             "source": news['source'],
-            "summary": summary
+            "summary": summary,
+            "link": news['link'],
         }
 
         if news["category"] == "business":
             print("true1")
-            # self.businessNews_save(news)
+            self.businessNews_save(news)
         if news["category"] == "sports":
             print("true2")
-            # self.sportsNews_save(news)
+            self.sportsNews_save(news)
         if news["category"] == "tech":
             print("true3")
-            # self.techNews_save(news)
+            self.techNews_save(news)
 
     def businessNews_save(self, techNews):
         db = firestore.client()

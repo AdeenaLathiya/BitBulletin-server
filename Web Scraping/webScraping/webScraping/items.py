@@ -18,9 +18,10 @@ class WebscrapingItem(scrapy.Item):
     content = scrapy.Field()
     image = scrapy.Field()
     time = scrapy.Field()
-    date = scrapy.Field()
+    # date = scrapy.Field()
     category = scrapy.Field()
     source = scrapy.Field()
     summary = scrapy.Field()
+    link = scrapy.Field()
 
     pass
