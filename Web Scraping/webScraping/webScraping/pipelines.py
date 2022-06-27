@@ -11,6 +11,7 @@ from spacy.lang.en.stop_words import STOP_WORDS
 from heapq import nlargest
 
 from itemadapter import ItemAdapter
+from datetime import datetime
 
 import firebase_admin
 from firebase_admin import credentials
@@ -20,33 +21,46 @@ class WebscrapingPipeline(object):
     def __init__(self):
         cred = credentials.Certificate("./credentials.json")
         firebase_admin.initialize_app(
-            cred, {"databaseURL": "https:/bitbulletin-73e03.firebaseio.com"}
+            cred, {"databaseURL": "https:/bitbulletin-6052e.firebaseio.com"}
         )
 
     def process_item(self, item, spider):
         news = ItemAdapter(item).asdict()
-        summary = self.text_summarizer(news['content'])
+
+        content = news['content']
+
+        extraString = 'Compunode.com Pvt. Ltd. ( ).Designed for  . Copyright © 2022, Dawn Scribe Publishing Platform' 
+        extraString2 = ".Updated"
+
+        if extraString in content:
+            content = content.replace(extraString, '')
+        if extraString2 in content:
+            content = content.split(extraString2, 1)
+            content = content[0]
+
+        summary = self.text_summarizer(content)
 
         news = {
             "title": news['title'],
             "author": news['author'],
-            "content": news['content'],
+            "content": content,
             "image": news['image'],
             "time": news['time'],
-            "date": news['date'],
+            # "date": news['date'],
             "category": news['category'],
             "source": news['source'],
-            "summary": summary
+            "summary": summary,
+            "link": news['link'],
         }
 
         if news["category"] == "business":
-            # print("true1")
+            print("true1")
             self.businessNews_save(news)
         if news["category"] == "sports":
-            # print("true2")
+            print("true2")
             self.sportsNews_save(news)
         if news["category"] == "tech":
-            # print("true3")
+            print("true3")
             self.techNews_save(news)
 
     def businessNews_save(self, techNews):
