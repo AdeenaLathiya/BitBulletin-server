@@ -40,12 +40,15 @@ class WebscrapingPipeline(object):
 
         summary = self.text_summarizer(content)
 
+        time = news['time']
+        time = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+
         news = {
             "title": news['title'],
             "author": news['author'],
             "content": content,
             "image": news['image'],
-            "time": news['time'],
+            "time": time,
             # "date": news['date'],
             "category": news['category'],
             "source": news['source'],
