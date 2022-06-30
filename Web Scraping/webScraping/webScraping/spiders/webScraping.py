@@ -1,6 +1,8 @@
 import scrapy
 from scrapy import Request
 from ..items import WebscrapingItem
+from datetime import datetime
+import json
 
 class WebscrapingSpider(scrapy.Spider):
   name = 'webScraping'
@@ -63,7 +65,9 @@ class WebscrapingSpider(scrapy.Spider):
     items['content'] = response.css('p > span:nth-child(1)::text , p:nth-child(3)::text , .location-names::text').extract()
     items["image"] = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.top-big-img div.story-featuredimage div.amp-top-main-img div.featured-image-global img::attr(src)').get()
     # items["date"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
-    time = response.xpath('//meta[@property="article:published_time"]/@content')[0].extract()
+    # time = response.xpath('//meta[@property="article:published_time"]/@content')[0].extract()
+    time = response.xpath('//script[@type="application/ld+json"]/text()').get()
+    json_data = json.loads(time, strict=False)
     category = response.meta['category']
     source = response.meta['source']
     link = response.meta['link']
@@ -73,7 +77,8 @@ class WebscrapingSpider(scrapy.Spider):
     "author": self.filterAttr(items['author']),
     "content": self.filterAttr(items['content']),
     "image": self.filterAttr(items['image']),
-    "time": time,
+    # "time": time,
+    "time":json_data['datePublished'],
     # "date": self.filterAttr(items['date']),
     "category": category,
     "source": source,
@@ -90,7 +95,9 @@ class WebscrapingSpider(scrapy.Spider):
     items['content'] = response.css('.story-text p::text').extract()
     items["image"] = response.css('div.story-box-section div.mainstorycontent-parent div.storypage-main-section2 div.storypage-rightside span.top-big-img div.story-featuredimage div.amp-top-main-img div.featured-image-global img::attr(src)').get()
     # items["date"] = response.css('div.story-box-section span.storypage-leftside div.left-authorbox span::text')[1].get()
-    time = response.xpath('//meta[@property="article:published_time"]/@content')[0].extract()
+    # time = response.xpath('//meta[@property="article:published_time"]/@content')[0].extract()
+    time = response.xpath('//script[@type="application/ld+json"]/text()').get()
+    json_data = json.loads(time, strict=False)
     category = response.meta['category']
     source = response.meta['source']
     link = response.meta['link']
@@ -100,7 +107,8 @@ class WebscrapingSpider(scrapy.Spider):
       "author": self.filterAttr(items['author']),
       "content": self.filterAttr(items['content']),
       "image": self.filterAttr(items['image']),
-      "time": time,
+      # "time": time,
+      "time":json_data['datePublished'],
       # "date": self.filterAttr(items['date']),
       "category": category,
       "source": source,
