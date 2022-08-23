@@ -5,7 +5,7 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/items.html
 
-from turtle import title
+# from turtle import title
 import scrapy
 from itemadapter import ItemAdapter
 

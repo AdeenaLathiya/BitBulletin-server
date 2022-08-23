@@ -1,6 +1,6 @@
 import scrapy
 from scrapy import Request
-from ..items import WebscrapingItem
+from webScraping.items import WebscrapingItem
 from datetime import datetime
 import json
 
