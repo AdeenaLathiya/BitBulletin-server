@@ -81,7 +81,7 @@ class WebscrapingPipeline(object):
     def businessNews_save(self, techNews):
         db = firestore.client()
         tech_ref = (
-            db.collection(u"Category")
+            db.collection(u"newCategory")
             .document(u"uLzkXth3HoYSWg9qF8VR")
             .collection(u"Business")
         )
@@ -90,7 +90,7 @@ class WebscrapingPipeline(object):
     def sportsNews_save(self, sportsNews):
         db = firestore.client()
         tech_ref = (
-            db.collection(u"Category")
+            db.collection(u"newCategory")
             .document(u"uLzkXth3HoYSWg9qF8VR")
             .collection(u"Sports")
         )
@@ -99,7 +99,7 @@ class WebscrapingPipeline(object):
     def techNews_save(self, techNews):
         db = firestore.client()
         tech_ref = (
-            db.collection(u"Category")
+            db.collection(u"newCategory")
             .document(u"uLzkXth3HoYSWg9qF8VR")
             .collection(u"Tech")
         )

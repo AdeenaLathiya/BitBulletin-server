@@ -5,7 +5,7 @@ from apscheduler.schedulers.twisted import TwistedScheduler
 from twisted.internet import reactor
 
 def send_request():
-    requests.post("https://shielded-retreat-95518.herokuapp.com/schedule.json", data={
+    requests.post("https://arcane-stream-23029.herokuapp.com/schedule.json", data={
         "project": "webScraping",
         "spider": "webScraping"
     })
